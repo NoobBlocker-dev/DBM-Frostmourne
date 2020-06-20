@@ -42,6 +42,7 @@ function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
 	timerAchieve:Start(-delay)
 	table.wipe(guids)
+	self.vb.phase = 1
 end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
@@ -67,10 +68,12 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg:sub(0, L.YellPhase2:len()) == L.YellPhase2 then
 		self:SendSync("Phase2")
+		self.vb.phase = 2
 	elseif msg == L.YellBreath or msg:find(L.YellBreath) then
 		self:SendSync("BreathSoon")
 	elseif msg:sub(0, L.YellPhase3:len()) == L.YellPhase3 then
 		self:SendSync("Phase3")
+		self.vb.phase = 3
 	end
 end
 

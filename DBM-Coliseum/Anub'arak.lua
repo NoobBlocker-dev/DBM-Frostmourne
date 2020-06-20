@@ -88,6 +88,7 @@ function mod:OnCombatStart(delay)
 		preWarnShadowStrike:Schedule(25.5-delay)
 		self:ScheduleMethod(30.5-delay, "ShadowStrike")
 	end
+	self.vb.phase = 1
 end
 
 function mod:Adds() 

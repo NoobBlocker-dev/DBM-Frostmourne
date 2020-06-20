@@ -21,18 +21,16 @@ local timerBlink = mod:NewCDTimer(30, 29208)
 local warnBlink = mod:NewAnnounce("Blink Soon", 1)
 local announceBlink = mod:NewSpellAnnounce(29208, 4)
 
-local phase = 0
-
 function mod:OnCombatStart(delay)
-	phase = 0
+	self.vb.phase = 0
 	self:BackInRoom(delay)
 end
 
 function mod:Balcony()
 	local timer
-	if phase == 1 then timer = 70
-	elseif phase == 2 then timer = 97
-	elseif phase == 3 then timer = 120
+	if self.vb.phase == 1 then timer = 70
+	elseif self.vb.phase == 2 then timer = 97
+	elseif self.vb.phase == 3 then timer = 120
 	else return	end
 	timerTeleportBack:Show(timer)
 	warnTeleportSoon:Schedule(timer - 20)
@@ -42,11 +40,11 @@ end
 
 function mod:BackInRoom(delay)
 	delay = delay or 0
-	phase = phase + 1
+	self.vb.phase = self.vb.phase + 1
 	local timer
-	if phase == 1 then timer = 90 - delay
-	elseif phase == 2 then timer = 110 - delay
-	elseif phase == 3 then timer = 180 - delay
+	if self.vb.phase == 1 then timer = 90 - delay
+	elseif self.vb.phase == 2 then timer = 110 - delay
+	elseif self.vb.phase == 3 then timer = 180 - delay
 	else return end
 	timerTeleport:Show(timer)
 	warnTeleportSoon:Schedule(timer - 20)
