@@ -17,7 +17,7 @@ local warnCurse			= mod:NewSpellAnnounce(29213, 2)
 
 local timerTeleport		= mod:NewTimer(90, "TimerTeleport", 46573)
 local timerTeleportBack	= mod:NewTimer(70, "TimerTeleportBack", 46573)
-local timerBlink = mod:NewCDTimer(30, 29208)
+local timerBlink = mod:NewNextTimer(30, 29208)
 local warnBlink = mod:NewAnnounce("Blink Soon", 1)
 local announceBlink = mod:NewSpellAnnounce(29208, 4)
 
@@ -32,6 +32,7 @@ function mod:Balcony()
 	elseif self.vb.phase == 2 then timer = 97
 	elseif self.vb.phase == 3 then timer = 120
 	else return	end
+	timerBlink:Stop()
 	timerTeleportBack:Show(timer)
 	warnTeleportSoon:Schedule(timer - 20)
 	warnTeleportNow:Schedule(timer)

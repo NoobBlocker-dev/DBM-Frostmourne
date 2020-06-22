@@ -30,9 +30,7 @@ local specwarnP2Soon		= mod:NewSpecialWarning("specwarnP2Soon")
 
 local blastTimer			= mod:NewBuffActiveTimer(4, 27808)
 local timerPhase2			= mod:NewTimer(227, "TimerPhase2")
-local mindControlStart  = mod:NewCDTimer(257, 28410)
-local mindControlCD = mod:NewCDTimer(90, 28410)
-local firstFrostBlast = mod:NewCDTimer(257, 27808)
+local mindControlCD = mod:NewNextTimer(90, 28410)
 local frostBlastCD    = mod:NewCDTimer(30, 27808)
 
 mod:AddBoolOption("BlastAlarm", true)
@@ -47,12 +45,12 @@ function mod:OnCombatStart(delay)
 	warnedAdds = false
 	specwarnP2Soon:Schedule(217-delay)
 	timerPhase2:Start()
-	firstFrostBlast:Start()
+	frostBlastCD:Start(257)
 	warnPhase2:Schedule(227)
 	self:ScheduleMethod(226, "StartPhase2")
 	self.vb.phase = 1
 	if mod:IsDifficulty("heroic25") then
-		mindControlStart:Start()
+		mindControlCD:Start(257)
 		warnMindControl:Schedule(252)
 	end
 	self:Schedule(227, DBM.RangeCheck.Show, DBM.RangeCheck, 12)

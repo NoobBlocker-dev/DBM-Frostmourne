@@ -44,7 +44,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(605) and args:IsSrcTypePlayer() then -- Mind Control
-		local timerMindControl = mod:NewTimer(60, args.sourceName.." Mind Control")
+		local timerMindControl = mod:NewTimer(60, args.sourceName.." Mind Control", 605)
 		timerMindControl:Start()
 	end
 end

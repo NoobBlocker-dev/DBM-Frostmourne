@@ -21,6 +21,9 @@ Bosstimer Additions
     
   - Four Horsemen
     - Added timer for Sir Zeliek's Holy Wrath
+
+  - Grobbulus
+    - Added a chat message when you get Mutating Injection
     
   - Anub'rekhan
     - Adjust timer for Locust Swarm ending (not when he casts it, that's somewhat random)
@@ -42,6 +45,13 @@ Bosstimer Additions
     - Adjusted timers for Tenebron / Vesperon / Shadron landing
     - Added a timer for Whelps spawning (from Tenebron's portal, as most groups don't kill his acolyte)
     - Added timers for portals activating for Vesperon and Shadron
+
+- The Eye of Eternity
+
+  - Malygos
+    - Added a timer for the first Vortex
+    - Added a timer for the first intermission, when Malygos is attackable
+    - Added a timer for the second intermission, when Malygos wipes his debuffs and starts casting Surge of Powers
 
 - Ulduar
 

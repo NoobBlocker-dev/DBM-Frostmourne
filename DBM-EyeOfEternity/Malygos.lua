@@ -28,6 +28,8 @@ local timerVortex		= mod:NewCastTimer(11, 56105)
 local timerVortexCD		= mod:NewNextTimer(60, 56105)
 local timerBreath		= mod:NewTimer(59, "TimerBreath", 60072)
 local timerAchieve      = mod:NewAchievementTimer(360, 1875, "TimerSpeedKill")
+local timerIntermission = mod:NewTimer(22, "Malygos Unattackable")
+local timerAttackable = mod:NewTimer(24, "Malygos Wipes Debuffs")
 
 local guids = {}
 local surgeTargets = {}
@@ -41,6 +43,7 @@ end
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
 	timerAchieve:Start(-delay)
+	timerVortexCD:Start(40)
 	table.wipe(guids)
 	self.vb.phase = 1
 end
@@ -74,6 +77,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg:sub(0, L.YellPhase3:len()) == L.YellPhase3 then
 		self:SendSync("Phase3")
 		self.vb.phase = 3
+	elseif msg == "ENOUGH! If you intend to reclaim Azeroth's magic, then you shall have it!" then
+		timerBreath:Stop()
+		timerAttackable:Start()
 	end
 end
 
@@ -107,6 +113,7 @@ function mod:OnSync(event, arg)
 	elseif event == "Phase2" then
 		timerSpark:Stop()
 		timerVortexCD:Stop()
+		timerIntermission:Start()
 		timerBreath:Start(92)
 	elseif event == "Breath" then
 		timerBreath:Schedule(1)
@@ -115,6 +122,5 @@ function mod:OnSync(event, arg)
 		warnBreathInc:Show()
 	elseif event == "Phase3" then
 		self:Schedule(6, buildGuidTable)
-		timerBreath:Stop()
 	end
 end
