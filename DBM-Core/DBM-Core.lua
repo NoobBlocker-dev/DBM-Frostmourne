@@ -58,10 +58,10 @@ f:SetScript("OnUpdate", fCLFix)
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 4915 $"):sub(12, -3),
-	Version = "4.97",
-	DisplayVersion = "4.97 Warmane-Frostmourne by Celeste", -- the string that is shown as version
-	ReleaseRevision = 4915 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 4923 $"):sub(12, -3),
+	Version = "4.98",
+	DisplayVersion = "4.98 Warmane-Frostmourne by Celeste", -- the string that is shown as version
+	ReleaseRevision = 4923 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -2230,7 +2230,7 @@ function DBM:CacheData(data, loc)
 	  end
 	end
   end
-  
+
 do
 	local testMod
 	local testWarning1, testWarning2, testWarning3
@@ -2355,7 +2355,7 @@ do
 				modId = modId,
 				revision = 0,
 				localization = self:GetModLocalization(name)
-			}, 
+			},
 			mt
 		)
 		for i, v in ipairs(self.AddOns) do
@@ -2393,7 +2393,7 @@ function bossModPrototype:SetZone(...)
 				self.zones[#self.zones + 1] = v
 			end
 		end
-		if self.addon and self.addon.zoneId then	
+		if self.addon and self.addon.zoneId then
 			for i, v in ipairs(self.addon.zoneId) do
 				self.zones[#self.zones + 1] = v
 			end
@@ -2718,7 +2718,7 @@ do
 		table.insert(self.announces, obj)
 		return obj
 	  end
-	
+
 	-- new constructor (auto-localized warnings and options, yay!)
 	local function newAnnounce(self, announceType, spellId, color, icon, optionDefault, optionName, castTime, preWarnTime)
 		spellName = GetSpellInfo(spellId) or "unknown"
