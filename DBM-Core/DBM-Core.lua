@@ -1075,34 +1075,37 @@ do
 	local inRaid = false
 	local playerRank = 0
 
+
 	function DBM:RAID_ROSTER_UPDATE()
 		if GetNumRaidMembers() >= 1 then
-			local playerWithHigherVersionPromoted = false
-			for i = 1, GetNumRaidMembers() do
-				local name, rank, subgroup, _, _, fileName = GetRaidRosterInfo(i)
-				if (not raid[name]) and inRaid then
-					fireEvent("raidJoin", name)
-					self:ScheduleMethod(2, "RAID_ROSTER_UPDATE")
-					return
-				end
-				raid[name] = raid[name] or {}
-				raid[name].name = name
-				raid[name].rank = rank
-				raid[name].subgroup = subgroup
-				raid[name].class = fileName
-				raid[name].id = "raid"..i
-				raid[name].updated = true
-				if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
-					playerWithHigherVersionPromoted = true
-				end
-			end
-			enableIcons = not playerWithHigherVersionPromoted
 			if not inRaid then
 				inRaid = true
 				sendSync("DBMv4-Ver", "Hi!")
 				self:Schedule(2, DBM.RequestTimers, DBM)
 				fireEvent("raidJoin", UnitName("player"))
 			end
+			local playerWithHigherVersionPromoted = false
+			for i = 1, GetNumRaidMembers() do
+				local name, rank, subgroup, _, _, fileName = GetRaidRosterInfo(i)
+				if name and inRaid then
+
+					if (not raid[name]) then
+						fireEvent("raidJoin", name)
+					end
+					
+					raid[name] = raid[name] or {}
+					raid[name].name = name
+					raid[name].rank = rank
+					raid[name].subgroup = subgroup
+					raid[name].class = fileName
+					raid[name].id = "raid"..i
+					raid[name].updated = true
+				end
+				if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
+					playerWithHigherVersionPromoted = true
+				end
+			end
+			enableIcons = not playerWithHigherVersionPromoted
 			for i, v in pairs(raid) do
 				if not v.updated then
 					raid[i] = nil
@@ -1117,6 +1120,7 @@ do
 			fireEvent("raidLeave", UnitName("player"))
 		end
 	end
+
 
 	function DBM:PARTY_MEMBERS_CHANGED()
 		if GetNumRaidMembers() > 0 then return end
