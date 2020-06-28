@@ -11,26 +11,26 @@ Bosstimer Additions
 
   - Noth the Plaguebringer
     - Added timer for Blink on 25 man
-    
+
   - Instructor Razuvious
     - Added duration timer for Mind Controls (from your raid team)
-    
+
   - Gothik the Harvester
     - Adjusted Phase 2 timer
     - Added timer for the gate opening
-    
+
   - Four Horsemen
     - Added timer for Sir Zeliek's Holy Wrath
 
   - Grobbulus
     - Added a chat message when you get Mutating Injection
-    
+
   - Anub'rekhan
     - Adjust timer for Locust Swarm ending (not when he casts it, that's somewhat random)
-    
+
   - Grand Widow Faerlina
     - Added duration timer for Mind Controls (from your raid team)
-    
+
   - Kel'Thuzad
     - Adjusted Phase 2 timer
     - Adjusted the Range Check from 10 to 12 to better reflect the Frost Blast range on Warmane
@@ -77,9 +77,6 @@ Bosstimer Additions
 
   - General Vezax
     - Added timer for Mark of the Faceless CD
-
-  - Algalon
-    - Big Bang now shows its alert even in a Black Hole
 
   - Mimiron
     - Adjust timers between phases
