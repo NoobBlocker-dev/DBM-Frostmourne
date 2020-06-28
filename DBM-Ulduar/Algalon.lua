@@ -79,7 +79,7 @@ function mod:startTimers()
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(64584, 64443) and not args:IsPlayerPhased() then 	-- Big Bang
+	if args:IsSpellID(64584, 64443) then 	-- Big Bang
 		timerBigBangCast:Start()
 		timerNextBigBang:Start()
 		announceBigBang:Show()
